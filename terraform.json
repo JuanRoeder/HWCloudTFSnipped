@@ -1,0 +1,216 @@
+{
+	//Configuración inicial
+	"Instanciar módulo HWCloudTFLib":{
+		"prefix": "tf-modHWCloudTFLib",
+		"body": [
+			"module \"HWCloudTFLib\" {",
+			"\tsource = \"git::https://github.com/JuanRoeder/HWCloudTFLib.git?ref=v1.5.0\"",				
+			"}",
+			"",
+			"locals {",
+			"\tenum_regions = module.HWCloudTFLib.enum_regions",
+			"\tenum_image_type = module.HWCloudTFLib.enum_image_type",
+			"\tenum_images = module.HWCloudTFLib.enum_images",
+			"\tenum_performance_type = module.HWCloudTFLib.enum_performance_type",
+			"\tenum_disk_type = module.HWCloudTFLib.enum_disk_type",
+			"\tenum_route_type = module.HWCloudTFLib.enum_route_type",
+			"\tenum_charging_mode = module.HWCloudTFLib.enum_charging_mode",
+			"\tenum_period_unit = module.HWCloudTFLib.enum_period_unit",
+			"\tenum_eip_type = module.HWCloudTFLib.enum_eip_type",
+			"\tenum_bw_share_type = module.HWCloudTFLib.enum_bw_share_type",
+			"\tenum_bw_charge_mode = module.HWCloudTFLib.enum_bw_charge_mode",
+			"}"
+		],
+		"description": "Snippet para instanciar el módulo HWCloudTFLib desde el GIT"
+	},
+	"Instanciar variables.tf":{
+		"prefix": "tf-variables",
+		"description": "Snippet para instanciar las variables en el archivo variables.tf",
+		"body": [
+			"variable \"HWCLOUD_SK\" {",
+			"\tdescription = \"Secret-key\"",
+			"\ttype = string",
+			"\tsensitive = true",
+			"}",
+			"",
+			"variable \"HWCLOUD_AK\" {",
+			"\tdescription = \"Access-key\"",
+			"\ttype = string",
+			"\tsensitive = true",
+			"}",
+			"",
+			"variable \"HWCLOUD_REGION\" {",
+			"\tdescription = \"Region\"",
+			"\ttype = string",
+			"\tdefault = \"\"",
+			"}",
+			"",
+			"variable \"HWCLOUD_PROJECTID\" {",
+			"\tdescription = \"Project ID\"",
+			"\ttype = string",
+			"\tdefault = \"\"",
+			"}"
+		]
+	},
+	"Instanciar proveedor Huawei Cloud para Terraform":{
+		"prefix": "tf-required_providers",
+		"body": [
+			"terraform {",
+			"\trequired_providers {",
+			"\t\thuaweicloud = {",
+			"\t\t\tsource  = \"huaweicloud/huaweicloud\"",
+			"\t\t\tversion = \">= 1.36.0\"",
+			"\t\t}",
+			"\t}",
+			"\trequired_version = \">= 0.13\"",
+			"}"
+		],
+		"description": "Snippet para instanciar el tipo de proveedor de Huawei Cloud para Terraform"
+	},
+	"Instanciar credenciales del proveedor Huawei Cloud":{
+		"prefix": "tf-provider hwcloud",
+		"body": [
+			"provider \"huaweicloud\" {",
+			"\tregion = ${1:region}",
+			"\taccess_key = \"${var.HWCLOUD_AK}\"",
+			"\tsecret_key = \"${var.HWCLOUD_SK}\"",
+			"}"
+		]
+	},
+	//Enterprise project
+	"Consulta data Enterprise Project":{
+		"prefix": "tf-data-eproject",
+		"body": [
+			"data \"huaweicloud_enterprise_project\" \"$enterprise_project\"{",
+			"\tname = \"$name\"",
+			"}"
+		]
+	},
+	//IMS
+	"Consulta data IMS":{
+		"prefix": "tf-data-image-windows",
+		"body": [
+			"data \"huaweicloud_images_image\" \"windows\" {",
+			"\tmost_recent  = true",
+			"\tarchitecture = \"x86\"",
+			"\tos           = \"Windows\"",
+			"\tvisibility   = \"public\"",
+			"\timage_type = local.enum_image_type.ECS",
+			"\tname = local.enum_images.windows.$Enum_Image_Name",
+			"}"
+		]
+	},
+	//ECS
+	"Instanciar ECS resource":{
+		"prefix": "tf-ecs-resource",
+		"body": [
+			"resource \"huaweicloud_compute_instance\" \"$nombre\" {",
+			"\tenterprise_project_id = $enterprise_project_id",
+			"\tname               = $name",
+			"\timage_id           = $image_id",
+			"\tflavor_id          = $flavor_id",
+			"\tsecurity_group_ids = $security_group_ids",
+			"\tavailability_zone  = $availability_zone",
+			"", 
+			"\tsystem_disk_type = $type",
+			"\tsystem_disk_size = $size",
+			"",  
+			"\tdynamic \"data_disks\" {",
+			"\t\tfor_each = [{",
+			"\t\t\ttype = $type",
+			"\t\t\tsize = $size",
+			"\t\t}]",
+			"\t\tcontent {",
+			"\t\t\ttype = data_disks.value.type",
+			"\t\t\tsize = data_disks.value.size",
+			"\t\t}",
+			"\t}",
+			"",  
+			"\tdynamic \"network\" {",
+			"\t\tfor_each = [{",
+			"\t\t\tuuid = $uuid",
+			"\t\t}]",
+			"\t\tcontent {",
+			"\t\t\tuuid = network.value.uuid",
+			"\t\t}",
+			"\t}",
+			"}",
+		]
+	},
+	//EIP
+	"Instanciar EIP resource":{
+		"prefix": "tf-eip-resource",
+		"body": [
+			"resource \"huaweicloud_vpc_eip\" \"$eip_name\" {",
+			"\tpublicip {",
+			"\t\ttype = local.enum_eip_type.$Enum_type",
+			"\t}",
+			"",
+			"\tbandwidth {",
+			"\t\tshare_type  = local.enum_bw_share_type.$Enum_type",
+			"\t\tname        = $bandwidth_name",
+			"\t\tsize        = $size",
+			"\t\tcharge_mode = local.enum_bw_charge_mode.$Enum_type",
+			"\t}",
+			"}",
+		]
+	},
+	//VPC
+	"Instanciar VPC resource":{
+		"prefix": "tf-vpc-resource",
+		"body": [
+			"resource \"huaweicloud_vpc\" \"$vpc_name\" {",
+			"\tname = $name",
+			"\tcidr = $cidr",
+			"}"
+		]
+	},
+	"Instanciar Subnet resource":{
+		"prefix": "tf-subnet-resource",
+		"body": [
+			"resource \"huaweicloud_vpc_subnet\" \"$subnet_name\" {",
+			"\tname              = $subnet_name",
+			"\tcidr              = $subnet_cidr",
+			"\tgateway_ip        = $subnet_gateway_ip",
+			"\tvpc_id            = $vpc_id",
+			"\tavailability_zone = $availability_zone",
+			"}",
+		]
+	},
+	"Instanciar Peering resource":{
+		"prefix": "tf-vpc-peering",
+		"body": [
+			"resource \"huaweicloud_vpc_peering_connection\" \"$peering\" {",
+			"\tname        = $peer_conn_name",
+			"\tvpc_id      = $vpc_id",
+			"\tpeer_vpc_id = $accepter_vpc_id",
+			"}"
+		]
+	},
+	"Instanciar Ruta resource":{
+		"prefix": "tf-route-resource",
+		"body": [
+			"resource \"huaweicloud_vpc_route\" \"$vpc_route\" {",
+			"\tvpc_id      = $vpc_id",
+			"\tdestination = $cdir_destination",
+			"\ttype        = $type",
+			"\tnexthop     = $nexthop",
+			"}"
+		]
+	},
+	//VPN
+	
+	//Workspace
+	"Instanciar servicio de Workspace":{
+		"prefix": "tf-wks-service",
+		"body": [
+
+		]
+	},
+	"Instanciar desktop virtual":{
+		"prefix": "tf-wks-desktop",
+		"body": [
+
+		]
+	}
+}
