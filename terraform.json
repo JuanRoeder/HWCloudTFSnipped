@@ -137,6 +137,18 @@
 			"}",
 		]
 	},
+	"Instanciar user_data win block":{
+		"prefix": "tf-ecs-user-data",
+		"body": [
+			"user_data = base64encode(file(\"$init_disk.ps1\"))"
+		]
+	},
+	"Instanciar user_data linux block":{
+		"prefix": "tf-ecs-user-data-linux",
+		"body": [
+			"user_data = base64encode(file(\"$cloud_init_script.yaml\"))"
+		]
+	},
 	//EIP
 	"Instanciar EIP resource":{
 		"prefix": "tf-eip-resource",
@@ -153,6 +165,15 @@
 			"\t\tcharge_mode = local.enum_bw_charge_mode.$Enum_type",
 			"\t}",
 			"}",
+		]
+	},
+	"Instanciar recurso de asociacion EIP con ECS":{
+		"prefix": "tf-eip-associate",
+		"body": [
+			"resource \"huaweicloud_compute_eip_associate\" \"$name\" {",
+			"\tpublic_ip   = \"$address_ip\"",
+			"\tinstance_id = \"$ecs_id\"",
+			"}"
 		]
 	},
 	//VPC
