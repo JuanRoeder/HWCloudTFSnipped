@@ -396,18 +396,5 @@
 			"\t}",
 			"}",
 		]
-	},
-	//Workspace
-	"Instanciar servicio de Workspace":{
-		"prefix": "tf-wks-service",
-		"body": [
-
-		]
-	},
-	"Instanciar desktop virtual":{
-		"prefix": "tf-wks-desktop",
-		"body": [
-
-		]
 	}
 }
