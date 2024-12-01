@@ -240,6 +240,55 @@
 			"}"
 		]
 	},
+	"Instanciar Security Group resource":{
+		"prefix": "tf-secgroup-resource",
+		"body": [
+			"resource \"huaweicloud_networking_secgroup\" \"$secGroupName\" {",
+			"\tname                 = \"$secGroupName\"",
+			"\tdelete_default_rules = true",
+			"}"
+		]
+	},
+	"Instanciar Security Group Rule resource":{
+		"prefix": "tf-secgroup-rule-resource",
+		"body": [
+			"resource \"huaweicloud_networking_secgroup_rule\" \"$ruleName\" {",
+			"\tsecurity_group_id = \"$security_group_id\"",
+			"\taction                  = local.enum_vpc.action_type.ALLOW",
+			"\tpriority                = 1 #Eliminar si 1 por defecto",
+			"\tdirection               = local.enum_vpc.secgroup_type.inbound",
+			"\tethertype               = local.enum_vpc.ip_version.IPv4",
+			"\tprotocol                = local.enum_vpc.protocol_type.TCP",
+			"\tports                   = $port1,$port2,$port3-$portN",
+			"\tremote_ip_prefix        = \"$cidr_block\" #Eliminar si no es a un rango de ips en específico",
+			"\remote_group_id          = \"$remote_group_id\" #Eliminar si no es a un Security Group",
+			"\remote_address_group_id  = \"$remote_address_group_id\" #Eliminar si no es a un grupo de ips",
+			"}"
+		]
+	},
+	"Instanciar Address Group resource":{
+		"prefix": "tf-addr-group-resource",
+		"body": [
+			"resource \"huaweicloud_vpc_address_group\" \"$addrGroupName\" {",
+			"\tname       = \"$addrGroupName\"",
+			"\tip_version = 4",
+			"",
+			"\tip_extra_set {",
+			"\t\tip      = \"$ip_address\"",
+			"\t\tremarks = \"$remarks_description\"",
+			"\t}",
+			"",
+			"\t\tip_extra_set {",
+			"\t\tip      = \"$cidr_block\"",
+			"\t\tremarks = \"$remarks_description\"",
+			"\t}",
+			"",
+			"\tip_extra_set {",
+			"\t\tip = \"$ip_address1-$ip_addressN\" #Rango de IPs",
+			"\t}",
+			"}"
+		]
+	},
 	//VPN
 	"Instanciar VPN Gateway resource":{
 		"prefix": "tf-vpn-gateway",
