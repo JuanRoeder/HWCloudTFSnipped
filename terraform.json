@@ -4,7 +4,7 @@
 		"prefix": "tf-modHWCloudTFLib",
 		"body": [
 			"module \"HWCloudTFLib\" {",
-			"\tsource = \"git::https://github.com/JuanRoeder/HWCloudTFLib.git?ref=v1.6.1\"",				
+			"\tsource = \"git::https://github.com/JuanRoeder/HWCloudTFLib.git?ref=v1.6.2\"",				
 			"}",
 			"",
 			"locals {",
