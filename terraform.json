@@ -261,8 +261,8 @@
 			"\tprotocol                = local.enum_vpc.protocol_type.TCP",
 			"\tports                   = $port1,$port2,$port3-$portN",
 			"\tremote_ip_prefix        = \"$cidr_block\" #Eliminar si no es a un rango de ips en específico",
-			"\remote_group_id          = \"$remote_group_id\" #Eliminar si no es a un Security Group",
-			"\remote_address_group_id  = \"$remote_address_group_id\" #Eliminar si no es a un grupo de ips",
+			"\tremote_group_id          = \"$remote_group_id\" #Eliminar si no es a un Security Group",
+			"\tremote_address_group_id  = \"$remote_address_group_id\" #Eliminar si no es a un grupo de ips",
 			"}"
 		]
 	},
