@@ -84,7 +84,7 @@
 		]
 	},
 	//IMS
-	"Consulta data IMS":{
+	"Consulta imagen Windows IMS":{
 		"prefix": "tf-data-image-windows",
 		"body": [
 			"data \"huaweicloud_images_image\" \"$windows\" {",
