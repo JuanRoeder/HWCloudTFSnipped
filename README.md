@@ -4,7 +4,11 @@ Archivo *.json con snippets para VS Code para llamados rápidos de elementos Ter
 
 Descargar y almacenar en la ruta:
 
-> `~USER_DATA\AppData\Roaming\Code\User\snippets\`
+```bash
+%AppData%\Code\User\snippets\
+```
+
+Una vez almacenado el archivo en la ruta mencionada
 
 A continuación, se describe los snippets disponibles para Terraform utilizando Huawei Cloud.
 
