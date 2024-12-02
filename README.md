@@ -18,7 +18,7 @@ A continuación, se describe los snippets disponibles para Terraform utilizando 
 
 ```hcl
 module "HWCloudTFLib" {
-    source = "git::https://github.com/JuanRoeder/HWCloudTFLib.git?ref=v1.6.1"
+    source = "git::https://github.com/JuanRoeder/HWCloudTFLib.git?ref=v1.6.2"
 }
 
 locals {
